@@ -1,0 +1,176 @@
+<html>
+    <script lang="javascript">
+        
+        var topmove = -5;
+        var leftmove = 5;
+        function caer() {
+
+            //declaracion de variables
+            var e = document.getElementById("box");
+            var y = document.getElementById("plate");
+            var cancion = document.getElementById("cancion");
+            e.onclick = null;
+            
+            //movimiento de la bola
+            var posplatetop = window.innerHeight - 65;
+            var posplateleft = parseInt(y.style.left) || window.innerWidth/2;
+            var top = parseInt(e.style.top) || posplatetop - 25;
+            var left = parseInt(e.style.left) || posplateleft;
+            e.style.top = top + topmove + "px";
+            e.style.left = left + leftmove + "px";
+            //colisiones
+            if (top < 11) {
+                topmove = 5;
+            }
+            if (left > window.innerWidth - 30) {
+                leftmove = -5;
+            }
+            if (left < 11) {
+                leftmove = 5;
+            }
+            //colision con la plataforma
+            if(top == posplatetop){
+                if(left > posplateleft - 75 && left < posplateleft + 75){
+                    topmove = -5;
+                }
+            }
+            //perder
+            if(top > window.innerHeight){
+                var e = document.getElementById("perder");
+                e.style.display = "block";
+                setTimeout(function() {
+                    location.reload();
+                }, 3000)
+    
+            }
+
+
+
+            
+
+            numberofblocks = (window.innerWidth/100);
+            if(window.innerWidth % 100 != 0){
+                numberofblocks = numberofblocks - 1;
+            }
+        //colision con los bloques 
+         for(var y = 1; y <= 4; y++){
+            for(var i = 0; i < numberofblocks; i++){
+                var bloque = document.getElementById("bloque" + i + y);
+                if(bloque.getBoundingClientRect().bottom >= e.getBoundingClientRect().top && bloque.getBoundingClientRect().top <= e.getBoundingClientRect().bottom && bloque.getBoundingClientRect().bottom <= e.getBoundingClientRect().bottom){
+                    if(bloque.getBoundingClientRect().left <= e.getBoundingClientRect().right && bloque.getBoundingClientRect().right >= e.getBoundingClientRect().left){
+                        topmove = 5;
+                        cancion.play();
+                        bloque.style.display = "none";
+                    }
+                }
+
+        
+    
+              
+            }
+            }
+           
+
+            
+            
+
+            setTimeout(caer, 50);
+
+
+        }
+
+        function createBlock(){
+            //boton para aumentar la velocidad de la bola
+            var button = document.getElementById("boton");
+            button.onclick = caer;
+
+
+            //matematicas complejas para que los bloques se adapten a la pantalla en el centro
+            numberofblocks = (window.innerWidth/100);
+            if(window.innerWidth % 100 != 0){
+                numberofblocks = numberofblocks - 1;
+            }
+            var extra = window.innerWidth % 100;
+            extra = extra/2;
+
+            blockaltura = window.innerHeight/2;
+        //creacion de los bloques
+         for(var y = 1; y <= 4; y++){
+            for(var i = 0; i < numberofblocks; i++){
+                var e = document.createElement("div");
+                e.id = "bloque" + i + y; //asigno un id a cada bloque para poder identificarlo en las colisiones
+                e.className = "bloque";
+                var randomColor = Math.floor(Math.random()*16777215).toString(16);
+                e.style.backgroundColor = "#" + randomColor;
+                e.style.left = extra + i*100+ "px";    
+                e.style.top = blockaltura + y*21 + "px";
+                document.body.appendChild(e);
+            }
+            }
+           
+        }
+
+        //movimiento de la plataforma
+        document.addEventListener("keypress", function onPress(event) {
+        if (event.key === "d") {
+ 
+            var e = document.getElementById("plate");
+            var left = parseInt(e.style.left) || window.innerWidth/2;
+            if(left < window.innerWidth - 75){
+                e.style.left = left + 15 + "px";
+            }
+        }
+        });
+
+        document.addEventListener("keypress", function onPress(event) {
+        if (event.key === "a") {
+ 
+            var e = document.getElementById("plate");
+            var left = parseInt(e.style.left) || window.innerWidth/2;
+            if(left > 75){
+                e.style.left = left - 15 + "px";
+            }
+        }
+        });
+
+
+
+
+        
+
+
+            
+
+    </script>
+    <head>
+        <link rel = "stylesheet" href=" ./index.css"/>
+            <title>atari breakout</title>
+        
+            <h1>ARCANOID</h1>
+            <h2>pulsa la bola para comenzar</h2>
+            <h3 >a,d para mover</h3>
+            
+
+    </head>
+    <body>
+
+        <button class="button" id = "boton" > ma dificil </button>
+        
+        <div id="box" onclick="createBlock(), caer()"></div>
+        <div id= "plate"></div>
+        <audio id="cancion" >
+            <source src="./audio1.mp3"  type="audio/mp3">
+        </audio>
+        <div class="gifperder" id="perder"></div>
+
+
+
+        
+        
+        
+        
+
+
+    </body>
+
+</html>
